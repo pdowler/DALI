@@ -1263,10 +1263,11 @@ fashion, it must include an overflow indicator where possible as specified in Se
 
 The service must support the special value of MAXREC=0. This value indicates
 that, in the event of an otherwise valid request, a valid response be returned
-containing metadata, no results, and an overflow indicator. The
-service is not required to execute the request and the overflow indicator does
-not necessarily mean that there is at least one record satisfying the query. The
-service may perform validation and may try to execute the request, in which case
+containing metadata but no results. The service is not required to execute the
+request and must only include the overflow indicator if it does execute and some
+results exist (e.g. truncation to 0 results occurred). Prior to DALI-1.2, the 
+use of an overflow indicator was allowed and did not convey any useful information.
+The service should perform validation and may try to execute the request, in which case
 a MAXREC=0 request can fail.
 
 The MAXREC parameter is always single-valued.
