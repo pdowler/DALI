@@ -1353,22 +1353,21 @@ in one of three kinds of responses:
 successful HTTP status code (200) and a service type-specific
 representation of the results, or an HTTP status code and a standard error
 document (see below), or an HTTP status code and a service type-specific
-error document.
+error document. The service must set the \verb|Content-Type| header \citep{std:HTTP}
+to describe the format of a non-empty response body.
 
 \subsection{Successful Requests}
 \label{sec:response-ok}
 Successfully executed requests must eventually (after zero or more redirects)
 result in a response with HTTP status code 200 (OK) and a response in the format
 requested by the client (Section \ref{sec:RESPONSEFORMAT}) or in the default format for the
-service. The service should set HTTP headers \citep{std:HTTP} that are useful to the correct values
-where possible. Recommended headers to set when possible:
+service. The service should set following headers where possible:
 
 \begin{tabular}{l l l l l}
 \label{tab:headers}
-Content-Type \\
-Content-Encoding \\
-Content-Length \\
-Last-Modified \\
+\verb|Content-Encoding| \\
+\verb|Content-Length| \\
+\verb|Last-Modified| \\
 \end{tabular}
 
 For jobs submitted to a DALI-async endpoint, the result(s) must be made
@@ -1416,8 +1415,14 @@ resource. Although UWS is currently specified for HTTP transport only, if it
 were to be extended for use via other transport protocols, the normal mechanisms
 of those protocols should be used.
 
-An error document describing errors in use of the DAL service protocol may be a
-VOTable document \citep{2019ivoa.spec.1021O} or a plain text document.
+An error document describing errors in use of the DAL service protocol may be in
+any format allowed by the service specification, for example a VOTable document
+\citep{2019ivoa.spec.1021O} or a plain text document. The response must include
+a Content-Type header specifying the format of the response. If the service
+specification allows the caller to specify output format (e.g. via the RESPONSEFORMAT
+parameter above or an HTTP Accept header), the service should use the same format for
+the error document when that is supported ans fall back to text/plain if necessary.
+
 The content of
 VOTable error documents is described in Section \ref{sec:use-votable} below. Service
 specifications will enumerate specific text to be included. For plain text error
@@ -1575,6 +1580,8 @@ specified the error, no further elements are needed, e.g.:
 ...
 </RESOURCE>
 \end{lstlisting}
+For a DALI-sync response, a response where the initial \xmlel{INFO} element specified an
+error should use a suitable (HTTP) response code as described above.
 
 If the initial \xmlel{INFO} element specified a status of OK then the service must
 append an \xmlel{INFO} element for the error after the table, e.g.:
@@ -1589,6 +1596,8 @@ unexpected IO error while converting something
 </INFO>
 </RESOURCE>
 \end{lstlisting}
+In this case, the HTTP response code should be 200 because the request was initially successful,
+even though an error occurs during output.
 
 The use of trailing \xmlel{INFO} element allows a service to stream output and still
 report overflows or errors to the client. The content of these trailing INFO
@@ -1642,6 +1651,8 @@ MAXREC
 \item changing terminology: What so far was mostly ``web resource'' is now
 ``endpoint''
 \item update Use of VOTable to refer to Data Origin EN for additional info
+\item require content-type header in http responses
+\item clarify error response code and format
 \end{itemize}
 
 \subsection{PR-DALI-1.1-20170412}
