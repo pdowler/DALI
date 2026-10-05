@@ -1374,7 +1374,7 @@ For jobs submitted to a DALI-async endpoint, the result(s) must be made
 available as children of the result list and directly accessible there.
 For jobs that inherently create a fixed result, service specifications may
 specify the name of the result explicitly. For example, TAP-1.0 has a single
-result and it must be named \verb|result|, e.g.:
+result and it must be named result, e.g.:
 
 \begin{verbatim}
 GET http://example.com/base/joblist/123/results/result
@@ -1418,10 +1418,10 @@ of those protocols should be used.
 An error document describing errors in use of the DAL service protocol may be in
 any format allowed by the service specification, for example a VOTable document
 \citep{2019ivoa.spec.1021O} or a plain text document. The response must include
-a Content-Type header specifying the format of the response. If the service
-specification allows the caller to specify output format (e.g. via the RESPONSEFORMAT
-parameter above or an HTTP Accept header), the service should use the same format for
-the error document when that is supported and fall back to text/plain if necessary.
+a Content-Type header specifying the format. If the service specification allows
+the caller to specify output format (e.g. via the RESPONSEFORMAT parameter above
+or an HTTP Accept header), the service should use the same format for the error
+document where feasible and fall back to text/plain if necessary.
 
 The content of
 VOTable error documents is described in Section \ref{sec:use-votable} below. Service
